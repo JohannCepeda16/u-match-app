@@ -3,13 +3,17 @@ import { View, Text, StyleSheet } from "react-native";
 import { colors } from "../../constants";
 import CustomTextInput from "../../components/forms/CustomTextInput";
 import CustomButton from "../../components/forms/CustomButton";
+import CustomPicker from "../../components/forms/CustomPicker";
 import UserServices from "../../services/UserServices";
 
 export default function Register(props) {
     const [user, setUser] = useState({
+		name: "",
         program: "Ingeniería de Sistemas",
         gender: "Hombre",
         college: "Escuela Colombiana de Ingeniería Julio Garavito",
+		semester: 0,
+		email: ""
     });
     const [validPsw, setValidPsw] = useState("");
     const [step, setStep] = useState(0);
@@ -77,11 +81,11 @@ export default function Register(props) {
                         <Text style={styles.text}>Nombre y apellido</Text>
                         <CustomTextInput placeholder="Pepito Perez" />
                         <Text style={styles.text}>Universidad</Text>
-                        <CustomTextInput placeholder="Pepito Perez" />
+						<CustomPicker options={["Seleccione...", "Escuela Colombiana de Ingeniería Julio Garavito", "Otra"]}/>
                         <Text style={styles.text}>Programa académico</Text>
                         <CustomTextInput placeholder="Pepito Perez" />
                         <Text style={styles.text}>Semestre</Text>
-                        <CustomTextInput placeholder="Pepito Perez" />
+                        <CustomTextInput placeholder="Pepito Perez" type="number-pad"/>
                         <Text style={styles.text}>Correo electrónico</Text>
                         <CustomTextInput
                             placeholder="nombre.apellido@mail..."
