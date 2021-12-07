@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "115293416241",
+    "firebase_url": "https://umatching-d13c4-default-rtdb.firebaseio.com",
+    "project_id": "umatching-d13c4",
+    "storage_bucket": "umatching-d13c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115293416241:android:dd5550cbd07494134c1e10",
+        "android_client_info": {
+          "package_name": "com.ieti.umatching"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115293416241-peurri0qprs5i52s989p59m9g9hirvu0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6xJ43XLdbTPPr6E5fCeErl4v-8_LeKas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115293416241-peurri0qprs5i52s989p59m9g9hirvu0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
