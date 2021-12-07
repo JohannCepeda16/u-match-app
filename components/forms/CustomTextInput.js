@@ -8,7 +8,7 @@ export default function CustomTextInput(props) {
       style={styles.input}
       value={value}
       placeholder={placeholder}
-      onChange={onChange}
+      onChangeText={onChange}
       keyboardType={type}
       secureTextEntry={type === "visible-password"}
     />
