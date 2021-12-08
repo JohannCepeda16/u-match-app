@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from "react-native";
 import { colors } from "../../constants";
 import CustomTextInput from "../../components/forms/CustomTextInput";
 import CustomButton from "../../components/forms/CustomButton";
-import CustomPicker from "../../components/forms/CustomPicker";
 import UserServices from "../../services/UserServices";
 
 export default function Register(props) {
