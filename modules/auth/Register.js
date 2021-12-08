@@ -8,12 +8,15 @@ import UserServices from "../../services/UserServices";
 
 export default function Register(props) {
     const [user, setUser] = useState({
-		name: "",
-        program: "Ingeniería de Sistemas",
-        gender: "Hombre",
-        college: "Escuela Colombiana de Ingeniería Julio Garavito",
-		semester: 0,
-		email: ""
+        name: "",
+        program: "",
+        gender: "",
+        college: "",
+        semester: 0,
+        email: "",
+		age: 18,
+		instagram: "",
+		whatsapp:""
     });
     const [validPsw, setValidPsw] = useState("");
     const [step, setStep] = useState(0);
@@ -22,10 +25,11 @@ export default function Register(props) {
         // e.preventDefault();
         //COMPROBAR LA DIRECCION DE CORREO ELECTRONICO
         if (step == 0) {
-            console.log(user);
+            console.log("user", user);
             UserServices.findUserByEmail(user.email)
                 .then((res) => {
-                    if (res) res.json();
+					console.log("res", res);
+                    if (res.status === 200 && res ) res.json();
                 })
                 .then((data) => {
                     console.log(data);
@@ -79,17 +83,58 @@ export default function Register(props) {
                 {step === 0 && (
                     <>
                         <Text style={styles.text}>Nombre y apellido</Text>
-                        <CustomTextInput placeholder="Pepito Perez" />
+                        <CustomTextInput
+                            placeholder="Pepito Perez"
+                            onChange={(text) =>
+                                setUser({ ...user, name: text })
+                            }
+                        />
                         <Text style={styles.text}>Universidad</Text>
-						<CustomPicker options={["Seleccione...", "Escuela Colombiana de Ingeniería Julio Garavito", "Otra"]}/>
+                        <CustomPicker
+                            onValueChange={(text) =>
+                                setUser({ ...user, college: text })
+                            }
+                            value={user.college}
+                            options={[
+                                "Seleccione...",
+                                "Escuela Colombiana de Ingeniería Julio Garavito",
+                                "Otra",
+                            ]}
+                        />
                         <Text style={styles.text}>Programa académico</Text>
-                        <CustomTextInput placeholder="Pepito Perez" />
+                        <CustomPicker
+                            onValueChange={(text) =>
+                                setUser({ ...user, program: text })
+                            }
+                            value={user.program}
+                            options={[
+                                "Seleccione...",
+                                "Economía",
+                                "Administración de empresas",
+                                "Ingeniería de sistemas",
+                                "Ingeniería mecánica",
+                                "Ingeniería industrial",
+                                "Ingeniería eléctrica",
+                                "Ingeniería electrónica",
+                                "Ingeniería biomédica",
+                                "Matemáticas",
+                            ]}
+                        />
                         <Text style={styles.text}>Semestre</Text>
-                        <CustomTextInput placeholder="Pepito Perez" type="number-pad"/>
+                        <CustomTextInput
+                            placeholder="Pepito Perez"
+                            type="number-pad"
+                            onChange={(text) =>
+                                setUser({ ...user, semester: text })
+                            }
+                        />
                         <Text style={styles.text}>Correo electrónico</Text>
                         <CustomTextInput
                             placeholder="nombre.apellido@mail..."
                             type="email-address"
+                            onChange={(text) =>
+                                setUser({ ...user, email: text })
+                            }
                         />
                     </>
                 )}
