@@ -9,6 +9,7 @@ import Register from "./modules/auth/Register";
 import UserContext from "./persistence/UserContext";
 import { initializeApp } from "firebase/app";
 import { onAuthStateChanged } from "firebase/auth";
+import ProfileView from "./modules/profile/ProfileView";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ export default function App() {
                     <Stack.Screen component={Login} name="Login" />
                     <Stack.Screen component={Register} name="Register" />
                     <Stack.Screen component={Home} name="Home" />
+                    <Stack.Screen component={ProfileView} name="Profile" />
                 </Stack.Navigator>
             </NavigationContainer>
         </UserContext.Provider>
