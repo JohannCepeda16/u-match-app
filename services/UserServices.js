@@ -1,10 +1,10 @@
-const URL = "https://u-match.herokuapp.com/api/v1/"
+const URL = "https://u-matching.herokuapp.com/api/v1/"
 const local = "http://localhost:8080/api/v1/"
 
 class UserServices {
 
     createUser(user) {
-        return fetch(local + "createUser", {
+        return fetch(URL + "createUser", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -14,7 +14,7 @@ class UserServices {
     }
 
     fetchAll(limit, token) {
-        return fetch(local + "fetchAll?limit=" + limit, {
+        return fetch(URL + "fetchAll?limit=" + limit, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -24,7 +24,7 @@ class UserServices {
     }
 
     fetchCustom(limit, filters, token) {
-        return fetch(local + "fetchCustom?limit=" + limit, {
+        return fetch(URL + "fetchCustom?limit=" + limit, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -44,7 +44,7 @@ class UserServices {
     }
 
     updateUser(user, token) {
-        return fetch(local + "updateUser", {
+        return fetch(URL + "updateUser", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -55,7 +55,7 @@ class UserServices {
     }
 
     rateUser(token, userId, rate) {
-        return fetch(local + "rateUser?userId=" + userId + "&rate=" + rate, {
+        return fetch(URL + "rateUser?userId=" + userId + "&rate=" + rate, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
