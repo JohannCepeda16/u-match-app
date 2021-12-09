@@ -3,9 +3,9 @@ import { View, Image, StyleSheet, Text, Pressable } from "react-native";
 import colors from "../../constants/colors";
 
 export default function UserChat(props) {
-    const { user } = props;
+    const { user, setCurrentChat } = props;
     return (
-        <Pressable onPress={() => props.navigation.navigate("ChatView")}>
+        <Pressable onPress={() => setCurrentChat(user)}>
             <View style={styles.row}>
                 <Image style={styles.picture} source={{ uri: user.picture }} />
                 <Text style={styles.text}>{user.fullName}</Text>
