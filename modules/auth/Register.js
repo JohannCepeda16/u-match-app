@@ -18,6 +18,7 @@ export default function Register(props) {
         semester: 0,
         email: "",
         age: 18,
+        description:"",
         instagram: "",
         whatsapp: "",
         password: "",
