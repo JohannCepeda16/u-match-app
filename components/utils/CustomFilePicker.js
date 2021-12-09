@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, View, StyleSheet, Image } from "react-native";
 import { colors } from "../../constants";
 import * as ImagePicker from "expo-image-picker";
+import CustomButton from "../forms/CustomButton";
 
 export default function CustomFilePicker(props) {
     const { handleFile } = props;
@@ -13,7 +14,7 @@ export default function CustomFilePicker(props) {
             await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (permissionResult.granted === false) {
-            alert("Permission to access camera roll is required!");
+            alert("El acesso a la camara es requerido");
             return;
         }
 
@@ -27,11 +28,10 @@ export default function CustomFilePicker(props) {
             {file ? (
                 <Image style={styles.picture} source={file} />
             ) : (
-                <Button
-                    style={styles.button}
+                <CustomButton
                     title="Seleccionar"
                     onPress={openImagePickerAsync}
-                ></Button>
+                ></CustomButton>
             )}
         </View>
     );
