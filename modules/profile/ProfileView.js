@@ -10,18 +10,10 @@ import CustomButton from "../../components/forms/CustomButton";
 import CustomTextInput from "../../components/forms/CustomTextInput";
 import { colors } from "../../constants";
 import { getAuth, onAuthStateChanged, Auth } from "firebase/auth";
-import {
-    getStorage,
-    ref,
-    uploadBytes,
-    getDownloadURL,
-    getMetadata,
-} from "firebase/storage";
+import { getStorage } from "firebase/storage";
 import UserServices from "../../services/UserServices";
 import CustomFilePicker from "../../components/utils/CustomFilePicker";
 import CustomTextArea from "../../components/forms/CustomTextArea";
-import CustomTag from "../../components/utils/CustomTag";
-import Menu from "../../components/menu/Menu";
 
 const auth = getAuth();
 const storage = getStorage();
@@ -48,9 +40,9 @@ export default function ProfileView(props) {
                         if (data) {
                             console.log("Found", data);
                             setUser(data);
+                            setLoading(false);
                             setSelectedFiles(data.pictures || []);
                             setInterets(data.interests || []);
-                            setLoading(false);
                         }
                     })
                     .catch((error) => console.log(error))
@@ -110,35 +102,28 @@ export default function ProfileView(props) {
             .catch((error) => console.log(error));
     };
 
-    const handleFileInput = async (uri, name) => {
-        const blob = await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function (e) {
-                console.log(e);
-                reject(new TypeError("Network request failed"));
-            };
-            xhr.responseType = "blob";
-            xhr.open("GET", uri, true);
-            xhr.send(null);
-        });
-
-        const fileRef = ref(storage, `users/pictures/${user.uid}/${name}`);
-        const result = await uploadBytes(fileRef, blob);
-
-        // We're done with the blob, close and release it
-        blob.close();
-
-        let url = await getDownloadURL(fileRef);
-        let data = await getMetadata(fileRef);
-        let files = user.pictures || [];
-        files.push({ url: url, name: data.name });
-        setSelectedFiles(files);
-        let updatedUser = user;
-        updatedUser.pictures = files;
-        updateUser(updatedUser);
+    const handleFileInput = (e) => {
+        const file = e.target.files[0];
+        const files = selectedFiles;
+        storage()
+            .ref("users")
+            .child("pictures")
+            .child(user.uid)
+            .child(file.name)
+            .put(file)
+            .then((res) => {
+                res.ref
+                    .getDownloadURL()
+                    .then((url) => {
+                        files.push({ url: url, name: file.name });
+                        setSelectedFiles(files);
+                        let updatedUser = user;
+                        updatedUser.pictures = files;
+                        updateUser(updatedUser);
+                    })
+                    .catch((error) => console.log(error));
+            })
+            .catch((error) => console.log(error));
     };
 
     const changuePicture = (e, index) => {
@@ -187,138 +172,109 @@ export default function ProfileView(props) {
 
     if (!loading) {
         return (
-            <>
-                <ScrollView>
-                    <View style={styles.container}>
-                        <Text style={styles.title}>Tu información</Text>
-                        <View style={styles.column}>
-                            <View>
-                                <Text style={styles.text}>Nombre</Text>
-                                <CustomTextInput
-                                    onChange={(text) =>
-                                        handleEdit("name", text)
-                                    }
-                                    value={user.fullName}
-                                    disabled={!editable}
-                                />
-                            </View>
-                            <View>
-                                <Text style={styles.text}>
-                                    Correo electrónico
-                                </Text>
-                                <CustomTextInput value={user.email} disabled />
-                            </View>
-                        </View>
-                        <View style={styles.row}>
-                            <View>
-                                <Text style={styles.text}>Edad</Text>
-                                <CustomTextInput
-                                    onChange={(text) => handleEdit("age", text)}
-                                    type="number-pad"
-                                    value={user.age.toString()}
-                                    disabled={!editable}
-                                />
-                            </View>
-                            <View>
-                                <Text style={styles.text}>Semestre</Text>
-                                <CustomTextInput
-                                    onChange={(text) =>
-                                        handleEdit("semester", text)
-                                    }
-                                    type="number-pad"
-                                    value={user.semester.toString()}
-                                    disabled={!editable}
-                                />
-                            </View>
-                        </View>
-                        <View style={styles.column}>
-                            <View>
-                                <Text style={styles.text}>Universidad</Text>
-                                <CustomTextInput
-                                    onChange={(text) =>
-                                        handleEdit("college", text)
-                                    }
-                                    value={user.college}
-                                    disabled={!editable}
-                                />
-                            </View>
-                            <View>
-                                <Text style={styles.text}>Programa</Text>
-                                <CustomTextInput
-                                    onChange={(text) =>
-                                        handleEdit("program", text)
-                                    }
-                                    value={user.program}
-                                    disabled={!editable}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={styles.title}>Tu estilo</Text>
-                        <ScrollView horizontal>
-                            <CustomFilePicker
-                                value={selectedFiles[0]?.url}
-                                handleFile={handleFileInput}
-                            />
-                            <CustomFilePicker
-                                value={selectedFiles[1]?.url}
-                                handleFile={handleFileInput}
-                            />
-                            <CustomFilePicker
-                                value={selectedFiles[2]?.url}
-                                handleFile={handleFileInput}
-                            />
-                        </ScrollView>
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={styles.title}>Tus intereses</Text>
-                        {editable && (
-                            <View style={styles.column}>
-                                <Text style={styles.text}>Intereses</Text>
-                                <CustomTextInput
-                                    onChange={(text) => setCurrentTag(text)}
-                                    placeholder="Amor, Amigos, Gatos"
-                                    disabled={!editable}
-                                />
-                            </View>
-                        )}
-                        {currentTag !== "" && (
-                            <CustomButton
-                                title="Agregar"
-                                onClick={() => addNewTag()}
-                            />
-                        )}
-                        {interests.map((interest, index) => (
-                            <View key={index}>
-                                <CustomTag name={interest.name} />
-                            </View>
-                        ))}
-                        <View style={[styles.column, { marginTop: 10 }]}>
-                            <Text style={styles.text}>Descripción</Text>
-                            <CustomTextArea
-                                onChange={(text) =>
-                                    handleEdit("description", text)
-                                }
-                                value={user.description}
+            <ScrollView>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Tu información</Text>
+                    <View style={styles.column}>
+                        <View>
+                            <Text style={styles.text}>Nombre</Text>
+                            <CustomTextInput
+                                onChange={(text) => handleEdit("name", text)}
+                                value={user.fullName}
                                 disabled={!editable}
                             />
                         </View>
-
-                        <CustomButton
-                            title={
-                                editable
-                                    ? "Guardar información"
-                                    : "Editar información"
-                            }
-                            onClick={() =>
-                                editable ? updateUser(user) : setEditable(true)
-                            }
+                        <View>
+                            <Text style={styles.text}>Correo electrónico</Text>
+                            <CustomTextInput value={user.email} disabled />
+                        </View>
+                    </View>
+                    <View style={styles.row}>
+                        <View>
+                            <Text style={styles.text}>Edad</Text>
+                            <CustomTextInput
+                                onChange={(text) => handleEdit("age", text)}
+                                type="number-pad"
+                                value={user.age.toString()}
+                                disabled={!editable}
+                            />
+                        </View>
+                        <View>
+                            <Text style={styles.text}>Semestre</Text>
+                            <CustomTextInput
+                                onChange={(text) =>
+                                    handleEdit("semester", text)
+                                }
+                                type="number-pad"
+                                value={user.semester.toString()}
+                                disabled={!editable}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.column}>
+                        <View>
+                            <Text style={styles.text}>Universidad</Text>
+                            <CustomTextInput
+                                onChange={(text) => handleEdit("college", text)}
+                                value={user.college}
+                                disabled={!editable}
+                            />
+                        </View>
+                        <View>
+                            <Text style={styles.text}>Programa</Text>
+                            <CustomTextInput
+                                onChange={(text) => handleEdit("program", text)}
+                                value={user.program}
+                                disabled={!editable}
+                            />
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Tu estilo</Text>
+                    <ScrollView horizontal>
+                        <CustomFilePicker />
+                        <CustomFilePicker />
+                        <CustomFilePicker />
+                    </ScrollView>
+                </View>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Tus intereses</Text>
+                    <View style={styles.column}>
+                        <Text style={styles.text}>Intereses</Text>
+                        <CustomTextInput
+                            onChange={(text) => setCurrentTag(text)}
+                            placeholder="Amor, Amigos, Gatos"
+                            disabled={!editable}
                         />
                     </View>
-                </ScrollView>
-                <Menu navigation={props.navigation} />
-            </>
+                    {currentTag !== "" && (
+                        <CustomButton
+                            title="Agregar"
+                            onClick={() => addNewTag()}
+                        />
+                    )}
+                    <View style={[styles.column, { marginTop: 10 }]}>
+                        <Text style={styles.text}>Descripción</Text>
+                        <CustomTextArea
+                            onChange={(text) => handleEdit("description", text)}
+                            value={user.description}
+                            disabled={!editable}
+                        />
+                    </View>
+
+                    <CustomButton
+                        title={
+                            editable
+                                ? "Guardar información"
+                                : "Editar información"
+                        }
+                        onClick={() =>
+                            editable ? updateUser(user) : setEditable(true)
+                        }
+                    />
+                </View>
+            </ScrollView>
         );
     } else {
         return (
