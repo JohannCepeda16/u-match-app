@@ -1,16 +1,18 @@
 import { StyleSheet, TextInput } from "react-native";
 import React from "react";
+import { colors } from "../../constants";
 
 export default function CustomTextInput(props) {
-  const { placeholder, onChange, value, type } = props;
+  const { placeholder, onChange, value, type, disabled=false } = props;
   return (
     <TextInput
-      style={styles.input}
+      style={[styles.input, {backgroundColor: disabled ? colors.dark : colors.light, color: disabled ? colors.light : colors.dark}]}
       value={value}
       placeholder={placeholder}
       onChangeText={onChange}
       keyboardType={type}
       secureTextEntry={type === "visible-password"}
+      editable={!disabled}
     />
   );
 }
@@ -18,7 +20,6 @@ export default function CustomTextInput(props) {
 const styles = StyleSheet.create({
   input: {
     padding: 10,
-    backgroundColor: "#fff",
     margin: 10,
     justifyContent: "center",
     textAlign: "center",
