@@ -24,6 +24,7 @@ export default function CustomFilePicker(props) {
         }
 
         let pickerResult = await ImagePicker.launchImageLibraryAsync();
+		
         console.log("Image", pickerResult);
         setFile(pickerResult);
         handleFile(pickerResult.uri, new Date().toISOString());
