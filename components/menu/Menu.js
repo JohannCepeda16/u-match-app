@@ -27,6 +27,7 @@ export default function Menu(props) {
                                     signOut(auth);
                                     props.navigation.navigate("Home");
                                 }
+                                setVisible(false);
                             }}
                         >
                             <Text style={styles.item}>{option.label}</Text>
