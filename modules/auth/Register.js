@@ -11,7 +11,7 @@ const auth = getAuth();
 
 export default function Register(props) {
     const [user, setUser] = useState({
-        name: "",
+        fullName: "",
         program: "",
         gender: "",
         college: "",
@@ -93,7 +93,7 @@ export default function Register(props) {
                         <CustomTextInput
                             placeholder="Pepito Perez"
                             onChange={(text) =>
-                                setUser({ ...user, name: text })
+                                setUser({ ...user, fullName: text })
                             }
                         />
                         <Text style={styles.text}>Universidad</Text>

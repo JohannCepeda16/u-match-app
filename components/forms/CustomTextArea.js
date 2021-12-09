@@ -1,8 +1,8 @@
-import { StyleSheet, TextInput } from "react-native";
 import React from "react";
+import { TextInput, StyleSheet } from "react-native";
 import { colors } from "../../constants";
 
-export default function CustomTextInput(props) {
+export default function CustomTextArea(props) {
     const { placeholder, onChange, value, type, disabled = false } = props;
     return (
         <TextInput
@@ -19,6 +19,8 @@ export default function CustomTextInput(props) {
             keyboardType={type}
             secureTextEntry={type === "visible-password"}
             editable={!disabled}
+            multiline
+            numberOfLines={3}
         />
     );
 }

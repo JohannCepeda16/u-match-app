@@ -8,10 +8,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Register from "./modules/auth/Register";
 import UserContext from "./persistence/UserContext";
 import { initializeApp } from "firebase/app";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 import ProfileView from "./modules/profile/ProfileView";
 
 const Stack = createNativeStackNavigator();
+const auth = getAuth();
 
 export default function App() {
     const firebaseConfig = {
@@ -27,22 +28,22 @@ export default function App() {
     initializeApp(firebaseConfig);
     const [userId, setUserId] = useState("");
 
-    // useEffect(() => {
-    //     onAuthStateChanged((user) => {
-    //         if (user) {
-    //             setUserId(user.uid);
-    //         }
-    //     });
-    // }, []);
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUserId(user.uid);
+            }
+        });
+    }, []);
 
     return (
         <UserContext.Provider value={userId}>
             <NavigationContainer>
                 <Stack.Navigator>
-                    <Stack.Screen component={Login} name="Login" />
-                    <Stack.Screen component={Register} name="Register" />
                     <Stack.Screen component={Home} name="Home" />
                     <Stack.Screen component={ProfileView} name="Profile" />
+                    <Stack.Screen component={Login} name="Login" />
+                    <Stack.Screen component={Register} name="Register" />
                 </Stack.Navigator>
             </NavigationContainer>
         </UserContext.Provider>

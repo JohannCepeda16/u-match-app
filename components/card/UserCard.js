@@ -6,7 +6,7 @@ import CustomTag from "../utils/CustomTag";
 
 export default function UserCard(props) {
     const { user } = props;
-    const [currentPicture, setCurrentPicture] = useState(user.pictures[0]);
+    const [currentPicture, setCurrentPicture] = useState(user.pictures[0] || null);
 
     useEffect(() => {
         setCurrentPicture(user.pictures[0]);
@@ -34,7 +34,7 @@ export default function UserCard(props) {
                 />
             </View>
             <View style={styles.row}>
-                {user.pictures.map((picture, index) => (
+                {user.pictures && user.pictures.map((picture, index) => (
                     <Pressable
                         style={[
                             styles.point,
@@ -54,7 +54,7 @@ export default function UserCard(props) {
                 <Text style={styles.text}>{user.description}</Text>
             </View>
             <View style={styles.row}>
-                {user.interests.map((interest, index) => (
+                {user.interests && user.interests.map((interest, index) => (
                     <View key={index}>
                         <CustomTag name={interest.name} color={colors.light} />
                     </View>

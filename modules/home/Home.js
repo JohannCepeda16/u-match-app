@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import {
+    View,
+    StyleSheet,
+    Image,
+    ActivityIndicator,
+    Pressable,
+	Text
+} from "react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import UserServices from "../../services/UserServices";
-import colors from "../../constants/colors"
+import colors from "../../constants/colors";
+import UserCard from "../../components/card/UserCard";
+import leftArrow from "../../assets/left-arrow.png";
+import rightArrow from "../../assets/right-arrow.png";
+import fire from "../../assets/fire.png";
+import MatchServices from "../../services/MatchServices";
 
 const auth = getAuth();
 
 export default function Home(props) {
     const [users, setUsers] = useState([]);
-    const [currentUser, setCurrentUser] = useState({});
+    const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [limit, setLimit] = useState(10);
@@ -32,6 +44,7 @@ export default function Home(props) {
     }, []);
 
     useEffect(() => {
+        console.log("updated user", users[index]);
         setCurrentUser(users[index]);
     }, [index]);
 
@@ -72,6 +85,7 @@ export default function Home(props) {
     };
 
     const likeUser = () => {
+        setLoading(true);
         auth.currentUser
             .getIdToken()
             .then((token) => {
@@ -79,20 +93,51 @@ export default function Home(props) {
                     .then((res) => res.text())
                     .then((data) => {
                         if (data == "true") {
-                            document.getElementById("modalButton").click();
+                            alert("Has hecho match con " + currentUser.fullName + "!!");
                         } else {
                             console.log(data);
                         }
                         nextUser();
-                        setUsers(users.splice(index, index));
-                        console.log(data);
+                        setUsers(users.filter((user) => user.uid !== currentUser.uid));
                     })
                     .catch((error) => console.log(error));
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error))
+            .finally(() => {
+                setLoading(false);
+            });
     };
-    if (!loading) {
-        return <View style={styles.container}></View>;
+    if (!loading && users.length <= 0) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>
+                    No tenemos usuarios para mostrar
+                </Text>
+            </View>
+        );
+    } else if (!loading) {
+        return (
+            <View style={styles.container}>
+                <UserCard user={currentUser} />
+                <View style={styles.row}>
+                    <Pressable onPress={() => prevUser()}>
+                        <Image
+                            style={[styles.control, { marginRight: 60 }]}
+                            source={leftArrow}
+                        />
+                    </Pressable>
+                    <Pressable onPress={() => likeUser()}>
+                        <Image style={[styles.control, {}]} source={fire} />
+                    </Pressable>
+                    <Pressable onPress={() => nextUser()}>
+                        <Image
+                            style={[styles.control, { marginLeft: 60 }]}
+                            source={rightArrow}
+                        />
+                    </Pressable>
+                </View>
+            </View>
+        );
     } else {
         return (
             <View style={styles.container}>
@@ -111,5 +156,20 @@ const styles = StyleSheet.create({
         color: "white",
         paddingBottom: 10,
         height: "100%",
+    },
+    row: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 20,
+    },
+    control: {
+        width: 50,
+        height: 50,
+        alignSelf: "center",
+    },
+    title: {
+        fontSize: 25,
+        color: colors.secondary,
     },
 });
