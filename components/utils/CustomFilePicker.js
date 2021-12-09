@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import CustomButton from "../forms/CustomButton";
 
 export default function CustomFilePicker(props) {
+	
     const { handleFile, value } = props;
 
     const [file, setFile] = useState();
