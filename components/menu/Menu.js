@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Button, View, Pressable, StyleSheet, Text } from "react-native";
 import { colors } from "../../constants";
+import { signOut, getAuth } from "firebase/auth";
+
+const auth = getAuth();
 
 export default function Menu(props) {
     const [visible, setVisible] = useState(false);
@@ -8,6 +11,7 @@ export default function Menu(props) {
         { label: "Inicio", path: "Home" },
         { label: "Mi Perfil", path: "Profile" },
         { label: "Chat", path: "Chat" },
+        { label: "Cerrar sesión", path: "logout" },
     ]);
     return (
         <>
@@ -16,9 +20,14 @@ export default function Menu(props) {
                     {options.map((option, i) => (
                         <Pressable
                             key={i}
-                            onPress={() =>
-                                props.navigation.navigate(option.path)
-                            }
+                            onPress={() => {
+                                if (option.path !== "logout")
+                                    props.navigation.navigate(option.path);
+                                else {
+                                    signOut(auth);
+                                    props.navigation.navigate("Home");
+                                }
+                            }}
                         >
                             <Text style={styles.item}>{option.label}</Text>
                         </Pressable>
@@ -61,6 +70,6 @@ const styles = StyleSheet.create({
         borderColor: colors.secondary,
         borderWidth: 1,
         margin: 1,
-        padding:10,
+        padding: 10,
     },
 });

@@ -1,9 +1,14 @@
 import { StyleSheet, TextInput } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { colors } from "../../constants";
 
 export default function CustomTextInput(props) {
     const { placeholder, onChange, value, type, disabled = false } = props;
+
+    useEffect(() => {
+        console.log("type", type);
+    }, []);
+
     return (
         <TextInput
             style={[
@@ -16,8 +21,8 @@ export default function CustomTextInput(props) {
             value={value}
             placeholder={placeholder}
             onChangeText={onChange}
-            keyboardType={type}
             secureTextEntry={type === "visible-password"}
+            keyboardType={type !== "visible-password" ? type : "ascii-capable"}
             editable={!disabled}
         />
     );

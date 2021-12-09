@@ -15,6 +15,7 @@ import leftArrow from "../../assets/left-arrow.png";
 import rightArrow from "../../assets/right-arrow.png";
 import fire from "../../assets/fire.png";
 import MatchServices from "../../services/MatchServices";
+import Menu from "../../components/menu/Menu";
 
 const auth = getAuth();
 
@@ -113,6 +114,7 @@ export default function Home(props) {
                 <Text style={styles.title}>
                     No tenemos usuarios para mostrar
                 </Text>
+                <Menu navigation={props.navigation}/>
             </View>
         );
     } else if (!loading) {
@@ -136,6 +138,7 @@ export default function Home(props) {
                         />
                     </Pressable>
                 </View>
+                <Menu navigation={props.navigation}/>
             </View>
         );
     } else {
